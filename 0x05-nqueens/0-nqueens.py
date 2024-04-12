@@ -54,4 +54,4 @@ if __name__ == "__main__":
     N = int(sys.argv[1])
     myboard = create_board(N)
     solutions = recursive_solve(myboard, 0, N)
-    
+ 
