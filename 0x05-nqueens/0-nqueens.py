@@ -1,57 +1,44 @@
 #!/usr/bin/python3
-"""Solving N Queens Problem using backtracking"""
+""" N queens """
 import sys
 
 
-def printSolution(board, n):
-    """Print allocated positions to the queen"""
-    solution = []
+if len(sys.argv) > 2 or len(sys.argv) < 2:
+    print("Usage: nqueens N")
+    exit(1)
 
-    for r in range(n):
-        for c in range(n):
-            if c == board[r]:
-                solution.append([r, c])
-    print(solution)
+if not sys.argv[1].isdigit():
+    print("N must be a number")
+    exit(1)
+
+if int(sys.argv[1]) < 4:
+    print("N must be at least 4")
+    exit(1)
+
+n = int(sys.argv[1])
 
 
-def is_position_safe(board, r, c, row):
-    """Checks if the position is safe for the queen"""
-    return board[r] in (c, c - r + row, r - row + c)
-
-
-def recursive_solve(board, row, n):
-    """Find all safe positions where the queen can be allocated"""
-    if row == n:
-        printSolution(board, n)
-
+def queens(n, i=0, a=[], b=[], c=[]):
+    """ find possible positions """
+    if i < n:
+        for j in range(n):
+            if j not in a and i + j not in b and i - j not in c:
+                yield from queens(n, i + 1, a + [j], b + [i + j], c + [i - j])
     else:
-        for c in range(n):
-            allowed = True
-            for r in range(row):
-                if is_position_safe(board, r, c, row):
-                    allowed = False
-            if allowed:
-                board[row] = c
-                recursive_solve(board, row + 1, n)
+        yield a
 
 
-def create_board(size):
-    """Generates the board"""
-    return [0 * size for i in range(size)]
+def solve(n):
+    """ solve """
+    k = []
+    i = 0
+    for solution in queens(n, 0):
+        for s in solution:
+            k.append([i, s])
+            i += 1
+        print(k)
+        k = []
+        i = 0
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-    if sys.argv[1].isdigit() is False:
-        print("N must be a number")
-        sys.exit(1)
-    if int(sys.argv[1]) < 4:
-        print("N must be at least 4")
-        sys.exit(1)
-
-    N = int(sys.argv[1])
-    myboard = create_board(N)
-    solutions = recursive_solve(myboard, 0, N)
- 
+solve(n)
